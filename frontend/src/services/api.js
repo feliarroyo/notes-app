@@ -40,6 +40,6 @@ export const api = {
       method: 'DELETE'
     });
     if (!response.ok) throw new Error('Failed to delete note');
-    return response.json();
+    return true;
   }
 };
