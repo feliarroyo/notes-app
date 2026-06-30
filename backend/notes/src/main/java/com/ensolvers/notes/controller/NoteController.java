@@ -15,7 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ensolvers.notes.model.Note;
+import com.ensolvers.notes.dto.NoteRequestDTO;
+import com.ensolvers.notes.dto.NoteResponseDTO;
 import com.ensolvers.notes.service.NoteService;
 
 import lombok.RequiredArgsConstructor;
@@ -29,38 +30,38 @@ public class NoteController {
     private final NoteService noteService;
 
     @PostMapping
-    public ResponseEntity<Note> createNote(@RequestBody Note note) {
-        return new ResponseEntity<>(noteService.createNote(note), HttpStatus.CREATED);
+    public ResponseEntity<NoteResponseDTO> createNote(@RequestBody NoteRequestDTO requestDTO) {
+        return new ResponseEntity<>(noteService.createNote(requestDTO), HttpStatus.CREATED);
     }
 
     @GetMapping
-    public ResponseEntity<List<Note>> getActiveNotes() {
+    public ResponseEntity<List<NoteResponseDTO>> getActiveNotes() {
         return ResponseEntity.ok(noteService.getActiveNotes());
     }
 
     @GetMapping("/archived")
-    public ResponseEntity<List<Note>> getArchivedNotes() {
+    public ResponseEntity<List<NoteResponseDTO>> getArchivedNotes() {
         return ResponseEntity.ok(noteService.getArchivedNotes());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Note> updateNote(@PathVariable Long id, @RequestBody Note note) {
-        return ResponseEntity.ok(noteService.updateNote(id, note));
+    public ResponseEntity<NoteResponseDTO> updateNote(@PathVariable Long id, @RequestBody NoteRequestDTO requestDTO) {
+        return ResponseEntity.ok(noteService.updateNote(id, requestDTO));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Note> deleteNote(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteNote(@PathVariable Long id) {
         noteService.deleteNote(id);
         return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/{id}/archive")
-    public ResponseEntity<Note> archiveNote(@PathVariable Long id) {
+    public ResponseEntity<NoteResponseDTO> archiveNote(@PathVariable Long id) {
         return ResponseEntity.ok(noteService.archiveNote(id));
     }
 
     @PatchMapping("/{id}/unarchive")
-    public ResponseEntity<Note> unarchiveNote(@PathVariable Long id) {
+    public ResponseEntity<NoteResponseDTO> unarchiveNote(@PathVariable Long id) {
         return ResponseEntity.ok(noteService.unarchiveNote(id));
     }
 
