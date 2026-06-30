@@ -8,7 +8,7 @@ export default function NoteCard({ note, onToggleArchive, onDelete, onEdit }) {
         }`}>
         {/* Note Header: Title */}
         <div className="flex justify-between items-start gap-4 mb-3">
-            <h3 className={`text-lg font-bold text-slate-800 break-words flex-1 ${note.archived ? 'text-slate-500' : ''
+            <h3 className={`text-lg font-bold text-slate-800 wrap-break-word flex-1 ${note.archived ? 'text-slate-500' : ''
                 }`}>
                 {note.title || <span className="italic text-slate-400">(No title)</span>}
             </h3>
@@ -22,7 +22,7 @@ export default function NoteCard({ note, onToggleArchive, onDelete, onEdit }) {
         </div>
 
         {/* Note Body: Content */}
-        <p className={`text-slate-600 text-sm whitespace-pre-wrap break-words mb-6 min-h-[60px] ${note.archived ? 'text-slate-400' : ''
+        <p className={`text-slate-600 text-sm whitespace-pre-wrap wrap-break-word mb-6 min-h-15 ${note.archived ? 'text-slate-400' : ''
             }`}>
             {note.content || <span className="italic text-slate-300">(No content)</span>}
         </p>
