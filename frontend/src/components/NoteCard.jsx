@@ -8,9 +8,9 @@ export default function NoteCard({ note, onToggleArchive, onDelete, onEdit }) {
         }`}>
         {/* Note Header: Title */}
         <div className="flex justify-between items-start gap-4 mb-3">
-            <h3 className={`text-lg font-bold text-slate-800 break-words flex-1 ${note.archived ? 'line-through text-slate-500' : ''
+            <h3 className={`text-lg font-bold text-slate-800 break-words flex-1 ${note.archived ? 'text-slate-500' : ''
                 }`}>
-                {note.title || <span className="italic text-slate-400">Untitled Note</span>}
+                {note.title || <span className="italic text-slate-400">(No title)</span>}
             </h3>
 
             {/* Status Badge */}
@@ -24,7 +24,7 @@ export default function NoteCard({ note, onToggleArchive, onDelete, onEdit }) {
         {/* Note Body: Content */}
         <p className={`text-slate-600 text-sm whitespace-pre-wrap break-words mb-6 min-h-[60px] ${note.archived ? 'text-slate-400' : ''
             }`}>
-            {note.content || <span className="italic text-slate-300">No content provided.</span>}
+            {note.content || <span className="italic text-slate-300">(No content)</span>}
         </p>
 
         {/* Note Actions Footer */}
@@ -50,7 +50,7 @@ export default function NoteCard({ note, onToggleArchive, onDelete, onEdit }) {
 
             <button
                 onClick={() => {
-                    if (window.confirm('Are you absolutely sure you want to delete this note permanently?')) {
+                    if (window.confirm('Are you sure you want to delete this note permanently?')) {
                         onDelete(note.id);
                     }
                 }}
