@@ -9,6 +9,7 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [editNote, setEditNote] = useState(null);
+  const [selectedTag, setSelectedTag] = useState(null);
 
   // Fetch notes from backend
   const loadNotes = async () => {
@@ -82,6 +83,16 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // 1. Extract a unique, sorted list of all tags currently in the active view
+  const availableTags = Array.from(
+    new Set(notes.flatMap((note) => note.tagNames || []))
+  ).sort();
+
+  // 2. Filter the notes if a tag is clicked, otherwise show all
+  const displayedNotes = selectedTag
+    ? notes.filter((note) => note.tagNames && note.tagNames.includes(selectedTag))
+    : notes;
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 antialiased">
       {/* Header Bar */}
@@ -119,9 +130,9 @@ export default function App() {
         )}
 
         {/* NoteForm creates note when calling onSave */}
-        <NoteForm 
-          onSave={handleSaveNote} 
-          initialData={ editNote }
+        <NoteForm
+          onSave={handleSaveNote}
+          initialData={editNote}
           onCancel={() => setEditNote(null)} />
 
         <div className="mb-6 mt-12">
@@ -131,10 +142,40 @@ export default function App() {
           <p className="text-slate-400 text-xs mt-0.5">
             {notes.length} note{(notes.length !== 1) ? 's' : ''}
           </p>
+          {/* New Tag Filter Bar */}
+          {availableTags.length > 0 && (
+            <div className="flex flex-wrap gap-2 mt-4">
+              <button
+                onClick={() => setSelectedTag(null)}
+                className={`px-3 py-1 text-xs font-bold rounded-full transition-colors ${selectedTag === null
+                    ? 'bg-slate-800 text-white'
+                    : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
+                  }`}
+              >
+                All
+              </button>
+              {availableTags.map((tag) => (
+                <button
+                  key={tag}
+                  onClick={() => setSelectedTag(tag)}
+                  className={`px-3 py-1 text-xs font-bold rounded-full transition-colors ${selectedTag === tag
+                      ? 'bg-blue-600 text-white' // Active tag color
+                      : 'bg-[#e2e8f0] text-[#334155] hover:bg-slate-300' // Inactive tag color
+                    }`}
+                >
+                  {tag}
+                </button>
+              ))}
+            </div>
+          )}
+
+          <p className="text-slate-400 text-xs mt-3">
+            Showing {displayedNotes.length} of {notes.length} note{(notes.length !== 1) ? 's' : ''}
+          </p>
         </div>
 
         <NoteList
-          notes={notes}
+          notes={displayedNotes}
           loading={loading}
           onToggleArchive={handleToggleArchive}
           onDelete={handleDelete}
