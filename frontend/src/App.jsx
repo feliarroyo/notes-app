@@ -8,6 +8,7 @@ export default function App() {
   const [viewArchived, setViewArchived] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [editNote, setEditNote] = useState(null);
 
   // Fetch notes from backend
   const loadNotes = async () => {
@@ -28,16 +29,27 @@ export default function App() {
     loadNotes();
   }, [viewArchived]);
 
-  const handleCreateNote = async (newNoteData) => {
+  // Handle data creation / modification
+  const handleSaveNote = async (noteData) => {
     try {
-      // Send data via POST
-      const savedNote = await api.createNote(newNoteData);
-      
-      // Add to UI array if currently on Active Notes
-      if (!viewArchived) {
-        setNotes((prevNotes) => [savedNote, ...prevNotes]);
-      } else {
-        alert('Note created successfully on "Active Notes"');
+      if (editNote) {
+        const updatedNote = await api.updateNote(editNote.id, noteData);
+        setNotes((prevNotes) =>
+          prevNotes.map((note) => (note.id === updatedNote.id ? updatedNote : note))
+        );
+        setEditNote(null);
+        return;
+      }
+      else {
+        // Send data via POST
+        const savedNote = await api.createNote(noteData);
+
+        // Add to UI array if currently on Active Notes
+        if (!viewArchived) {
+          setNotes((prevNotes) => [savedNote, ...prevNotes]);
+        } else {
+          alert('Note created successfully on "Active Notes"');
+        }
       }
     } catch (err) {
       alert('Error creating note: ' + err.message);
@@ -64,8 +76,10 @@ export default function App() {
     }
   };
 
-  const handleEditPlaceholder = (note) => {
-    alert(`Edit modal triggered for Note ID: ${note.id}`);
+  // Fill in form data with the editing note
+  const handleEditSelect = (note) => {
+    setEditNote(note);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
@@ -79,17 +93,15 @@ export default function App() {
           <div className="flex items-center gap-3">
             <button
               onClick={() => setViewArchived(false)}
-              className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
-                !viewArchived ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'
-              }`}
+              className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${!viewArchived ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'
+                }`}
             >
               Active Notes
             </button>
             <button
               onClick={() => setViewArchived(true)}
-              className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
-                viewArchived ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'
-              }`}
+              className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${viewArchived ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'
+                }`}
             >
               Archive
             </button>
@@ -107,7 +119,10 @@ export default function App() {
         )}
 
         {/* NoteForm creates note when calling onSave */}
-        <NoteForm onSave={handleCreateNote} />
+        <NoteForm 
+          onSave={handleSaveNote} 
+          initialData={ editNote }
+          onCancel={() => setEditNote(null)} />
 
         <div className="mb-6 mt-12">
           <h2 className="text-2xl font-bold text-slate-800">
@@ -118,12 +133,12 @@ export default function App() {
           </p>
         </div>
 
-        <NoteList 
+        <NoteList
           notes={notes}
           loading={loading}
           onToggleArchive={handleToggleArchive}
           onDelete={handleDelete}
-          onEdit={handleEditPlaceholder}
+          onEdit={handleEditSelect}
         />
       </main>
     </div>

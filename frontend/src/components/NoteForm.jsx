@@ -1,21 +1,28 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-export default function NoteForm( { onSave } ) {
+export default function NoteForm( { onSave, initialData, onCancel } ) {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
+
+    useEffect(() => {
+        if (initialData) {
+            setTitle(initialData.title);
+            setContent(initialData.content);
+        }
+    }, [initialData]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
         if (!title.trim() && !content.trim()) return;
-        onSave({ title: title.trim(), content: content.trim() });
+        onSave({ ...initialData, title: title.trim(), content: content.trim() });
 
         setTitle('');
         setContent('');
     }
     return (
         <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-md max-w-xl mx-auto mb-8">
-            <h3 className="text-lg font-bold text-slate-800 mb-4">Create New Note</h3>
+            <h3 className="text-lg font-bold text-slate-800 mb-4">{initialData ? 'Edit Note' : 'Create New Note'}</h3>
 
             <form onSubmit={ handleSubmit } className="space-y-4">
                 {/* Title Input */}
@@ -54,6 +61,15 @@ export default function NoteForm( { onSave } ) {
                     >
                         Save Note
                     </button>
+                    {initialData && (
+                        <button
+                            type="button"
+                            onClick={onCancel}
+                            className="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 text-sm font-medium rounded-lg shadow-sm transition-colors"
+                        >
+                            Cancel
+                        </button>
+                    )}
                 </div>
             </form>
         </div>
