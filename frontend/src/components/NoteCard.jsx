@@ -12,13 +12,6 @@ export default function NoteCard({ note, onToggleArchive, onDelete, onEdit }) {
                     }`}>
                     {note.title || <span className="italic text-slate-400">(No title)</span>}
                 </h3>
-
-                {/* Status Badge */}
-                {note.archived && (
-                    <span className="text-xs bg-slate-200 text-slate-600 font-medium px-2 py-0.5 rounded-full">
-                        Archived
-                    </span>
-                )}
             </div>
 
             {/* Note Body: Content */}
