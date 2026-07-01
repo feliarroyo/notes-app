@@ -1,5 +1,6 @@
 # Notes App
 
+- Originally developed as part of a Full Stack Implementation challenge from Hirelens (original challenge found on CHALLENGE.md)
 - Single Page Web Application (SPA), frontend and backend are separate apps
 - Backend app developed using Java + Spring Boot, provides REST API for communication with frontend
 - Frontend app developed using React.
